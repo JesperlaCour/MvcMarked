@@ -1,0 +1,102 @@
+﻿@model MvcMarked.Models.ProductCategoriesViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Brugtmarkedet</h1>
+<br />
+@*@if (User.Identity.IsAuthenticated)
+    {
+        <form asp-action="Create">
+            <input class="btn btn-primary" type="submit" value="Opret ny vare" />
+        </form>
+        <br />
+        <hr />
+        <br />
+    }*@
+@if (User.Identity.IsAuthenticated)
+{
+    <p>
+        <a asp-action="Create">Opret ny vare</a>
+    </p>
+}
+
+<form asp-controller="Products" asp-action="Index" method="get" class="col-md-4">
+    <p>
+        <div class="form-group">
+            <label class="control-label">Kategori</label>
+            <select asp-for="ProductCategory" asp-items="Model.Categories" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Søg i tekst</label>
+            <input type="text" asp-for="SearchString" class="form-control" />
+        </div>
+        <input class="btn btn-primary" type="submit" value="Vis" />
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Products[0].Link)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Products[0].Text)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Products[0].PhoneNr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Products[0].DateCreated)
+            </th>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.Products[0].CategoryId)
+                </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Products[0].Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>
+                    <img src="@item.Link" alt="Produktbillede" height=100 />
+                </td>
+                @*@Html.DisplayFor(modelItem => item.Link)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Text)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNr)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateCreated)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.CategoryId)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @if (item.UserName == User.Identity.Name && User.Identity.IsAuthenticated)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a>
+                    }
+                    |
+                    <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+                    @if (User.IsInRole("AdminAndDelete") || (item.UserName == User.Identity.Name && User.Identity.IsAuthenticated))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
